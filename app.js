@@ -22,7 +22,7 @@ And no console.log output
     navigator.clipboard
       .readText()
       .then((clipboard) => {
-        textBox.innerText = clipboard;
+        textBox.innerText = `Thanks for information! \n ${clipboard} \n `;
       })
       .catch((error) => {
         textBox.innerText = error;
@@ -34,7 +34,7 @@ And no console.log output
     const error = "Update your browser dude";
     appName && (textBox.innerText = error);
 
-    textBox.innerText = appName;
+    textBox.innerText = `And your browser is ${appName}! \n Wait?! What?! \n Hahahahahahahahaahah! \n How freakin old are you!!!? \n Hahahaha! I'm dying over here`;
   });
   // Get Geolocation LAT/LONG and display
   geoLocationBtn.addEventListener("click", () => {
