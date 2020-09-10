@@ -21,7 +21,8 @@ And no console.log output
   clipBtn.addEventListener("click", () => {
     navigator.clipboard
       .readText()
-      .then((clipboard) => (textBox.innerText = clipboard));
+      .then((clipboard) => (textBox.innerText = clipboard))
+      .catch("Nothing here to see!");
   });
   // Display browser (HINT: It only says Netscape)
   appBtn.addEventListener("click", () => {
