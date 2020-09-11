@@ -74,8 +74,11 @@ And no console.log output
   function getImg() {
     return new Promise((resolve, reject) => {
       ajax("https://api.thecatapi.com/v1/images/search?size=full", (data) => {
-        resolve(data);
-        reject("Image Not Found!");
+        if (data != null) {
+          resolve(data);
+        } else {
+          reject("Image Not Found!");
+        }
       });
     });
   }
