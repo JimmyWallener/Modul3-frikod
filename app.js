@@ -7,7 +7,6 @@ Use navigator clipboard/appName/Geolocation
 Use API
 Use Prettier
 And no console.log output
-
 */
 
 (function () {
@@ -23,7 +22,11 @@ And no console.log output
     navigator.clipboard
       .readText()
       .then((clipboard) => {
-        textBox.innerText = `Thanks for information! \n ${clipboard} \n `;
+        if (clipboard == "") {
+          textBox.innerText = "Nothing in Clipboard";
+        } else {
+          textBox.innerText = `Thanks for information! \n ${clipboard} \n `;
+        }
       })
       .catch((error) => {
         textBox.innerText = error;
@@ -32,10 +35,10 @@ And no console.log output
   // Display browser (HINT: It only says Netscape)
   appBtn.addEventListener("click", () => {
     const appName = navigator.appName;
-    const error = "Update your browser dude";
+    const error = "Browser not compatible";
     appName && (textBox.innerText = error);
 
-    textBox.innerText = `And your browser is ${appName}! \n Wait?! What?! \n Hahahahahahahahaahah! \n How freakin old are you!!!? \n Hahahaha! I'm dying over here`;
+    textBox.innerText = `Browser is: ${appName}!`;
   });
   // Get Geolocation LAT/LONG and display
   geoLocationBtn.addEventListener("click", () => {
@@ -64,13 +67,15 @@ And no console.log output
     });
   }
   async function postImg() {
-    try {
-      let jsonData = await fetchApi();
-      imgBox.innerHTML = `<img src="${jsonData[0]["url"]}">`;
-    } catch (error) {
-      imgBox.innerText = error;
-    }
+    await fetchApi()
+      .then(
+        (data) =>
+          (imgBox.innerHTML = `<img src="${data[0]["url"]}" placeholder="id:${data[0]["id"]}">`)
+      )
+      .catch(
+        (error) => (imgBox.innerText = `<p> Something went wrong: ${error}`)
+      );
   }
   postImg();
-  document.addEventListener("click", () => postImg());
+  imgBox.addEventListener("click", () => postImg());
 })();
