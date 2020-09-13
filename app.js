@@ -16,6 +16,7 @@ And no console.log output
   const geoLocationBtn = document.querySelector(".geolocation");
   const textBox = document.querySelector(".text-box");
   const imgBox = document.querySelector(".image-box");
+  let url = "https://api.thecatapi.com/v1/images/search?size=full";
 
   // Eventlistener for catching and showing CTRL+C in clipboard
   clipBtn.addEventListener("click", () => {
@@ -53,49 +54,23 @@ And no console.log output
   function error(error) {
     textBox.innerText = `ERROR(${error.code}): ${error.message}`;
   }
-  // Get JSON data from API
-  function ajax(url, callback) {
-    let http = new XMLHttpRequest();
-    http.onreadystatechange = () => {
-      if (http.readyState == 4 && http.status == 200) {
-        try {
-          var data = JSON.parse(http.responseText);
-        } catch (error) {
-          imgBox.innerText = error.message + " in " + http.responseText;
-          return;
-        }
-        callback(data);
-      }
-    };
-    http.open("GET", url, true);
-    http.send();
-  }
-  // Create a promise which returns JSON if furfilled otherwise returns no image found
-  function getImg() {
+
+  function fetchApi() {
     return new Promise((resolve, reject) => {
-      ajax("https://api.thecatapi.com/v1/images/search?size=full", (data) => {
-        if (data != null) {
-          resolve(data);
-        } else {
-          reject("Image Not Found!");
-        }
-      });
+      fetch(url)
+        .then((data) => data.json())
+        .then((data) => resolve(data))
+        .catch((error) => reject(error));
     });
   }
-  // Returns data from promise using async function
   async function postImg() {
-    let getImage = await getImg();
-    return getImage;
+    try {
+      let jsonData = await fetchApi();
+      imgBox.innerHTML = `<img src="${jsonData[0]["url"]}">`;
+    } catch (error) {
+      imgBox.innerText = error;
+    }
   }
-  window.addEventListener("load", () => {
-    //uses data from JSON to post image from promise.
-    postImg()
-      .then((img) => {
-        let imgSrc = `<img src="${img[0]["url"]}">`;
-        imgBox.innerHTML = imgSrc;
-      })
-      .catch((msg) => {
-        imgBox.innerText = msg;
-      });
-  });
+  postImg();
+  document.addEventListener("click", () => postImg());
 })();
